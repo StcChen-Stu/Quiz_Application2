@@ -8,6 +8,8 @@
     tools:context=".MainActivity2"
     android:background="@drawable/img_1">
 
+
+
     <Button
         android:id="@+id/end"
         android:layout_width="200dp"

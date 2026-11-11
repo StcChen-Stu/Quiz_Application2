@@ -2,8 +2,8 @@
     <string name="app_name">Your App Name</string>
     <string name="q1">Is 1 + 1 = 2?</string>
     <string name="q2">Is 25 * 30 = 725</string>
-    <string name="q3">Is 10^3 = 1000 </string>
+    <string name="q3">What is 10^3 equal to? </string>
     <string name="q4">Is 20 * 20 = 400</string>
-    <string name="q5">Is 4 + 3 = 6</string>
+    <string name="q5">What is 4 + 3 equal to?</string>
 
 </resources>

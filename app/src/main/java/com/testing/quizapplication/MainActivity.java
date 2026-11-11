@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.opengl.Visibility;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
@@ -21,19 +22,21 @@ public int currentIndex = 0;
 public quizQuestions[] mathQuestions = {
 new quizQuestions(R.string.q1, true),
         new quizQuestions(R.string.q2, false),
-        new quizQuestions(R.string.q3, true),
+        new quizQuestions(R.string.q3, "1000"),
         new quizQuestions(R.string.q4, true),
-        new quizQuestions(R.string.q5, false)
+        new quizQuestions(R.string.q5, "7")
 
 };
     private View background;
     private TextView title;
     private TextView question;
     private TextView questionNo;
+    private EditText userAnswer;
     private Button start;
     private Button trueButton;
     private Button falseButton;
     private Button Finish;
+    private Button submitAns;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +62,31 @@ new quizQuestions(R.string.q1, true),
         question.setVisibility(View.INVISIBLE);
         title.setVisibility(View.VISIBLE);
 
+        userAnswer = findViewById(R.id.userAnswer);
+
+        userAnswer.setVisibility(View.INVISIBLE);
+
         start = findViewById(R.id.begin);
         trueButton = findViewById(R.id.truth);
         falseButton = findViewById(R.id.lies);
         Finish = findViewById(R.id.Finish);
+        submitAns = findViewById(R.id.submitAns);
 
         start.setVisibility(View.VISIBLE);
         trueButton.setVisibility(View.INVISIBLE);
         falseButton.setVisibility(View.INVISIBLE);
         Finish.setVisibility(View.INVISIBLE);
+        submitAns.setVisibility(View.INVISIBLE);
+
+        userAnswer.setOnEditorActionListener((v, actionId, event) -> {
+                    String userInput = userAnswer.getText().toString().trim();
+                    checkText(userInput);
+                    return true;
+                });
+
+
+
+
 
         start.setOnClickListener(v ->  {
                 background.setVisibility(View.VISIBLE);
@@ -85,6 +104,13 @@ new quizQuestions(R.string.q1, true),
             });
         trueButton.setOnClickListener(v -> checkAnswer(true));
         falseButton.setOnClickListener(v -> checkAnswer(false));
+        submitAns.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userAnswer.getText();
+            }
+
+        });
 
         Finish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,12 +127,26 @@ new quizQuestions(R.string.q1, true),
         };
 
 
-        private void updateQuestion() {
-            if(currentIndex < mathQuestions.length){
-                questionNo.setText("Question " + (currentIndex+1));
+
+    private void updateQuestion() {
+            if(currentIndex < mathQuestions.length) {
+                questionNo.setText("Question " + (currentIndex + 1));
                 question.setText(mathQuestions[currentIndex].getAnsLocation());
-            }
-            else {
+
+                if (mathQuestions[currentIndex].isText()) {
+                    falseButton.setVisibility(View.INVISIBLE);
+                    trueButton.setVisibility(View.INVISIBLE);
+                    userAnswer.setVisibility(View.VISIBLE);
+                    userAnswer.setText("");
+
+                } else {
+                    falseButton.setVisibility(View.VISIBLE);
+                    trueButton.setVisibility(View.VISIBLE);
+                    userAnswer.setVisibility(View.INVISIBLE);
+
+
+                }
+            }else {
                 falseButton.setVisibility(View.INVISIBLE);
                 trueButton.setVisibility(View.INVISIBLE);
                 Finish.setVisibility(View.VISIBLE);
@@ -115,10 +155,11 @@ new quizQuestions(R.string.q1, true),
                         mathQuestions.length*2, Toast.LENGTH_LONG).show();
 
             }
+
         }
 
 
-        private void checkAnswer(boolean userInput) {
+    private void checkAnswer(boolean userInput) {
             if(currentIndex < mathQuestions.length){
                 if(mathQuestions[currentIndex].isTrue() == userInput){
                     Toast.makeText(MainActivity.this, "Correct", Toast.LENGTH_SHORT).show();
@@ -134,9 +175,27 @@ new quizQuestions(R.string.q1, true),
 
         }
 
+        private void checkText(String userInput){
 
+        if(currentIndex < mathQuestions.length){
+            String answer = mathQuestions[currentIndex].check();
 
-            //Coded for start up & hiding/shown option buttons for title and question slid
+            if(userInput.equalsIgnoreCase(answer)) {
+
+                Toast.makeText(MainActivity.this, "Correct", Toast.LENGTH_SHORT).show();
+                points += 2;
+
+            }else{
+
+                Toast.makeText(MainActivity.this, "Wrong", Toast.LENGTH_SHORT).show();
+
+            }
+            currentIndex++;
+            updateQuestion();
+        }
+
+        }
+
 
             }
 
